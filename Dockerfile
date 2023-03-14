@@ -1,14 +1,13 @@
-FROM debian:bullseye-slim
+FROM ruby:2-bullseye
 
 ENV FAKES3_TCP=4567
 ENV LICENSE=123123
 
-RUN apt-get update && apt-get install -yqq ruby rubygems-integration
+WORKDIR /opt/fakes3
 
 RUN gem install fakes3
-RUN mkdir -p /tmp/fakes3
-
-ENTRYPOINT ["/usr/local/bin/fakes3"]
-CMD ["-r",  "/tmp/fakes3", "-p",  "$FAKES3_TCP", "--license", "$LICENSE"]
+RUN mkdir -p /var/lib/fakes3/data
 
 EXPOSE $FAKES3_TCP 
+
+ENTRYPOINT fakes3 -r /var/lib/fakes3/data -p $FAKES3_TCP --license $LICENSE
